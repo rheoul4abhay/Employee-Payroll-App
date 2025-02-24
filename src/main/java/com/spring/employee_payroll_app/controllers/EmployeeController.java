@@ -1,6 +1,8 @@
 package com.spring.employee_payroll_app.controllers;
 
 import com.spring.employee_payroll_app.models.Employee;
+import com.spring.employee_payroll_app.services.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.spring.employee_payroll_app.models.Employee;
 import java.util.ArrayList;
@@ -10,50 +12,42 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    private final List<Employee> employeeList = new ArrayList<>();
+    private final EmployeeService employeeService;
+    //Constructor based injection (Better for testing purpose)
+    @Autowired
+    public EmployeeController(EmployeeService employeeService){
+        this.employeeService = employeeService;
+    }
 
-    @PostMapping
+    @PostMapping("/add")
     public Employee addEmployee(@RequestBody Employee employee){
-        employeeList.add(employee);
-        return employee;
+        return employeeService.addEmployee(employee);
     }
 
-    @GetMapping
+    @GetMapping("/show/all")
     public List<Employee> getAllEmployees(){
-        return employeeList;
+        return employeeService.getAllEmployees();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/show/{id}")
     public Employee getEmployeeById(@PathVariable Long id){
-        for(Employee emp: employeeList){
-            if(emp.getId() == id){
-                return emp;
-            }
-        }
-        return null;
+        return employeeService.getEmployeeById(id);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public Employee updateEmployeeById(@PathVariable long id, @RequestBody Employee updatedEmployee){
-        for(Employee emp: employeeList){
-            if(emp.getId() == id){
-                emp.setName(updatedEmployee.getName());
-                emp.setSalary(updatedEmployee.getSalary());
-                return emp;
-            }
-        }
-        return null;
+        return employeeService.updateEmployeeById(id, updatedEmployee);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public String deleteEmployeeById(@PathVariable long id){
-        for(Employee emp: employeeList){
-            if(emp.getId() == id){
-                employeeList.remove(emp);
-                return "Employee with ID '" + id + "' removed successfully!";
-            }
-        }
-        return "No employee with ID '" + id + "' found.";
+        boolean isDeleted = employeeService.deleteEmployeeById(id);
+        return isDeleted ? "Employee deleted successfully" : "Employee with ID '" + id + "' not found";
+    }
+
+    @DeleteMapping("/delete/all")
+    public String deleteAllEmployees(){
+        boolean isDeleted = employeeService.deleteAllEmployees();
+        return isDeleted ? "All Employees deleted successfully" : "No employee to delete";
     }
 }
-
