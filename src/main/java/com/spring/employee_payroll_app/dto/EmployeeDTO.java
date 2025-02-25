@@ -1,36 +1,22 @@
-package com.spring.employee_payroll_app.models;
+package com.spring.employee_payroll_app.dto;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity
-public class Employee {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class EmployeeDTO {
 
     private String name;
     private double salary;
 
-    public Employee(){};
+    public EmployeeDTO(){};
 
-    public Employee(Long id, String name, double salary){
-        this.id = id;
+    public EmployeeDTO(String name, double salary){
         this.name = name;
         this.salary = salary;
     }
 
     //getters and setters
-    public long getId(){
-        return id;
-    }
-
-    public void setId(Long id){
-        this.id = id;
-    }
 
     public String getName(){
         return name;
