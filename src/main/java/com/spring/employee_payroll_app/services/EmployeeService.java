@@ -1,6 +1,6 @@
 package com.spring.employee_payroll_app.services;
 
-import com.spring.employee_payroll_app.models.Employee;
+import com.spring.employee_payroll_app.dto.EmployeeDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,40 +10,40 @@ import java.util.List;
 
 @Service
 public class EmployeeService {
-    private final List<Employee> employeeList = new ArrayList<>();
+    private final List<EmployeeDTO> employeeList = new ArrayList<>();
 
-    public Employee addEmployee(@RequestBody Employee employee){
-        employeeList.add(employee);
-        return employee;
+    public EmployeeDTO registerEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        employeeList.add(employeeDTO);
+        return employeeDTO;
     }
 
-    public List<Employee> getAllEmployees() {
-        return employeeList;
+    public List<EmployeeDTO> fetchAllPayrollRecords() {
+        return new ArrayList<>(employeeList);
     }
 
-    public Employee getEmployeeById(@PathVariable Long id){
-        for(Employee emp: employeeList){
-            if(emp.getId() == id){
+    public EmployeeDTO fetchPayrollRecordByName(@PathVariable String name) {
+        for (EmployeeDTO emp : employeeList) {
+            if (emp.getName().equalsIgnoreCase(name)) {
                 return emp;
             }
         }
         return null;
     }
 
-    public Employee updateEmployeeById(@PathVariable long id, @RequestBody Employee updatedEmployee){
-        for(Employee emp: employeeList){
-            if(emp.getId() == id){
-                emp.setName(updatedEmployee.getName());
-                emp.setSalary(updatedEmployee.getSalary());
+    public EmployeeDTO updatePayrollRecordByName(@PathVariable String name, @RequestBody EmployeeDTO updatedEmployeeDTO) {
+        for (EmployeeDTO emp : employeeList) {
+            if (emp.getName().equalsIgnoreCase(name)) {
+                emp.setName(updatedEmployeeDTO.getName());
+                emp.setSalary(updatedEmployeeDTO.getSalary());
                 return emp;
             }
         }
         return null;
     }
 
-    public boolean deleteEmployeeById(@PathVariable long id){
-        for(Employee emp: employeeList){
-            if(emp.getId() == id){
+    public boolean removeEmployeeFromPayroll(@PathVariable String name) {
+        for (EmployeeDTO emp : employeeList) {
+            if (emp.getName().equalsIgnoreCase(name)) {
                 employeeList.remove(emp);
                 return true;
             }
@@ -51,8 +51,8 @@ public class EmployeeService {
         return false;
     }
 
-    public boolean deleteAllEmployees(){
-        if(!employeeList.isEmpty()){
+    public boolean clearPayrollRecords() {
+        if (!employeeList.isEmpty()) {
             employeeList.clear();
             return true;
         }
