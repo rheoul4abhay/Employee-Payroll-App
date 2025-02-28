@@ -1,6 +1,7 @@
 package com.spring.employee_payroll_app.controllers;
 
 import com.spring.employee_payroll_app.dto.EmployeeDTO;
+import com.spring.employee_payroll_app.exception.EmployeePayrollNotFoundException;
 import com.spring.employee_payroll_app.services.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -49,10 +50,11 @@ public class EmployeeController {
         EmployeeDTO employee = employeeService.fetchPayrollRecordByName(name);
         if (employee != null) {
             log.info("Payroll record for Employee {} retrieved successfully.", name);
+            return employee;
         } else {
             log.warn("No payroll record found for Employee {}", name);
+            throw new EmployeePayrollNotFoundException(name);
         }
-        return employee;
     }
 
     @PutMapping("/update/{name}")
@@ -60,10 +62,11 @@ public class EmployeeController {
         EmployeeDTO updatedRecord = employeeService.updatePayrollRecordByName(name, updatedEmployeeDTO);
         if (updatedRecord != null) {
             log.info("Payroll record for Employee {} updated successfully.", name);
+            return updatedRecord;
         } else {
             log.warn("No payroll record found for Employee {}", name);
+            throw new EmployeePayrollNotFoundException(name);
         }
-        return updatedRecord;
     }
 
     @DeleteMapping("/remove/{name}")
@@ -74,7 +77,7 @@ public class EmployeeController {
             return "Employee removed from payroll successfully.";
         } else {
             log.warn("No payroll record found for Employee {}", name);
-            return "Employee '" + name + "' not found in payroll records.";
+            throw new EmployeePayrollNotFoundException(name);
         }
     }
 
